@@ -10,7 +10,7 @@ def compare(a, b, index):
 def solution(strs, t):
     n = len(strs)
     nt=len(t)
-    dp=[123456789 for _ in range(nt+1) ]
+    dp=[nt+1 for _ in range(nt+1) ]
 
     bfs=deque()
     index=0
@@ -19,14 +19,15 @@ def solution(strs, t):
         lenths.append(len(s));
     for i in range(n):
         if compare(strs[i], t, index): # 만족하면
-            dp[ index+lenths[i]]=1
-            bfs.appendleft([strs[i], index+lenths[i], 1])
+            if dp[ index+lenths[i]] > 1:
+                dp[ index+lenths[i]] = 1
+                bfs.appendleft([strs[i], index+lenths[i], 1])
     min1=nt+1
     while bfs.__len__()>0:
         #print(dp)
         popped=bfs.popleft()
         _str, _index, _count = popped
-        if _str==t:
+        if _index==nt:
             min1=min(_count, min1)
         if _count > nt:
             break
@@ -35,7 +36,7 @@ def solution(strs, t):
             # 길이가 더작은지
             if compare(strs[i], t, _index):  # 만족하면
                 if dp[_index + lenths[i]] > _count+1:
-                    dp[_index +  lenths[i]] = _count+1
+                    dp[_index + lenths[i]] = _count+1
                     bfs.appendleft([_str+strs[i], _index + lenths[i], _count+1])
     if min1 == nt+1:
         return -1
